@@ -57,12 +57,20 @@ export function getAllPostIds() {
   });
 }
 
-export async function getPostData(id) {
+export async function getPostData(id: string) {
   const fullPath = path.join(postsDirectory, `${id}.md`);
   const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // Use gray-matter to parse the post metadata section
   const matterResult = matter(fileContents);
+
+  if (typeof matterResult.data.date !== "string") {
+    throw Error("date must be string!");
+  }
+
+  if (typeof matterResult.data.title !== "string") {
+    throw Error("title must be string!");
+  }
 
   // Use remark to convert markdown into HTML string
   const processedContent = await remark()
@@ -74,6 +82,7 @@ export async function getPostData(id) {
   return {
     id,
     contentHtml,
-    ...matterResult.data,
+    date: matterResult.data.date,
+    title: matterResult.data.title,
   };
 }
