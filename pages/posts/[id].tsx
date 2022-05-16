@@ -6,7 +6,9 @@ import utilStyles from "../../styles/utils.module.css";
 import { GetStaticPaths, GetStaticProps, NextPage } from "next";
 import { Post } from "../../types/post";
 
-const Post: NextPage<{ postData: Post }> = ({ postData }) => {
+type Props = { postData: Post };
+
+const Post: NextPage<Props> = ({ postData }) => {
   return (
     <Layout>
       <Head>
@@ -31,10 +33,9 @@ export const getStaticPaths: GetStaticPaths<Pick<Post, "id">> = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps<
-  { postData: Post },
-  { id: string }
-> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<Props, { id: string }> = async ({
+  params,
+}) => {
   if (!params) {
     return {
       notFound: true,
